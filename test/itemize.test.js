@@ -1,8 +1,15 @@
 const itemize = require('..')
+const iterall = require('iterall')
 const express = require('express')
+
+const {isAsyncIterable, getAsyncIterator} = iterall
 
 let server, items
 let lastHeaders
+
+function unfinishedValue(value) {
+  return { value, done: false }
+}
 
 beforeAll((done) => {
   const app = createApp()
@@ -10,9 +17,15 @@ beforeAll((done) => {
   server = app.listen(5000, done)
 })
 
+test('returns an async iterable', async () => {
+  expect(isAsyncIterable(items)).toBe(true);
+  expect(getAsyncIterator(items)).toBeDefined()
+  expect(getAsyncIterator(items)).toEqual(items)
+})
+
 test('first returns the root URL', async () => {
   const item = await items.next()
-  expect(item).toBe('http://localhost:5000/base/')
+  expect(item).toEqual(unfinishedValue('http://localhost:5000/base/'))
 })
 
 test('uses a keep-alive connection', async () => {
@@ -38,7 +51,7 @@ test('returns undefined when all items have been returned', async () => {
   let i = 10
   while(i--) {
     let item = await items.next()
-    expect(item).toBeUndefined()
+    expect(item).toEqual({ done: true, value: undefined })
   }
 })
 

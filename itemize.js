@@ -5,6 +5,7 @@ const log = require('util').debuglog('itemize')
 const url = require('url')
 const httpAgent = require('http').Agent
 const httpsAgent = require('https').Agent
+const $$asyncIterator = require('iterall').$$asyncIterator
 
 module.exports = itemize
 
@@ -17,16 +18,26 @@ function itemize (root, opts) {
   let agent = agency(root)
   let incrementor = 0
 
-  return { next, all, done, close }
+  const module = {
+    [$$asyncIterator]: () => module,
+    next,
+    all,
+    done,
+    close
+  }
+
+  return module
 
   async function next () {
     while (queue.length > 0 && visited.length <= incrementor) {
       await scrape(queue.shift())
     }
-    if (visited.length > incrementor) return visited[incrementor++]
+    if (visited.length > incrementor) {
+      return { done: false, value: visited[incrementor++] }
+    }
     if (queue.length === 0) {
       close()
-      return undefined
+      return { done: true, value: undefined }
     }
   }
 

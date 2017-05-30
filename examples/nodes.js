@@ -7,7 +7,7 @@ list()
 // List all the node binaries on nodejs.org
 async function list() {
   while (!releases.done()) {
-    const url = await releases.next()
+    const {value: url} = await releases.next();
     if (url.match(BINARY)) console.log(`==> ${url}`)
     else console.log(`    ${url}`)
   }

@@ -15,7 +15,8 @@ const urls = itemize('https://news.ycombinator.com', { depth: 2 })
 
 // Get a quick Hacker News sitemap
 while (!urls.done()) {
-  console.log(await urls.next())
+  const {value} = await urls.next()
+  console.log(value)
 }
 ```
 
@@ -40,12 +41,13 @@ const items = itemize('https://nodejs.org/download/release/', { depth: 1 })
 
 ### .next()
 
-Returns a Promise for a String, the next linked URL.
+Returns [an AsyncIterator](https://github.com/tc39/proposal-async-iteration#async-iterators-and-async-iterables),
+a Promise for a `{ value, done }` pair.
 
-If no urls remain, returns a Promise for `undefined`.
+If no urls remain, it will return `{ value: undefined, done: true }`
 
 ```js
-const url = await items.next()
+const val = await items.next()
 ```
 
 ### .done()

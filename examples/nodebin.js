@@ -6,6 +6,7 @@ list()
 async function list() {
   const urls = itemize('https://nodebin.herokai.com/', { depth: 3, query: true })
   while (!urls.done()) {
-    console.log(await urls.next())
+    const {value} = await urls.next();
+    console.log(value)
   }
 }

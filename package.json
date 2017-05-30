@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
+    "iterall": "^1.1.1",
     "requisition": "^1.7.0"
   }
 }

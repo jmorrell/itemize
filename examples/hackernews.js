@@ -6,6 +6,7 @@ list()
 async function list() {
   const urls = itemize('https://news.ycombinator.com', { depth: 2 })
   while (!urls.done()) {
-    console.log(await urls.next())
+    const {value} = await urls.next()
+    console.log(value)
   }
 }
